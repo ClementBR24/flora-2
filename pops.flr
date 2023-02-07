@@ -1,0 +1,64 @@
+\#1 : student
+[last -> 'Doe', first -> 'Mary', email -> 'marydoe@yahoo.com',
+joined -> fall(1999), graduated -> 'futuredate',
+advisor -> {\#(\#1)[who -> 'johndoe', since -> fall(1999)]},
+support -> {\#(\#1)[type ->ra, since -> fall(2001)],
+		\#(\#1)[type -> ta, until -> spring(2001)] },
+status -> {\#(\#1)[type->phd, since->spring(2002), remarks->'part time'],
+	\#(\#1)[type->phd, until->summer2(2000)],
+	\#(\#1)[type->ms, since->fall(2000), until->fall(2001)] },
+
+quals -> \#(\#1)[passed -> date(2000,10), history >> data(2000,5) ],
+defense -> \#(\#1)[passed -> 'futuredate'],
+female,
+domestic,
+taught -> { \#(\#1)[course->'cse529', semester->fall(2000), load -> 0.5],
+\#(\#1)[course->'cse310', semester->fall(2000), load -> 0.5], \#(\#1)[course->'cse305', semester->spring(2001)] },
+canteach ->{'cse332','cse336','cse333','cse230','cse528'}
+].
+
+cse505 : course[
+name -> 'Computing with Logic',
+offerings -> {
+\#[semester -> fall(2001), instructors -> {'cram'}, enrollment -> 15
+],
+\#[semester -> fall(2002),
+instructors -> {'warren'}, enrollment -> 25, need_grad_ta -> 0.5
+] }
+].
+
+cse334 : course[
+	name -> 'Introduction to Multimedia Systems', crosslisted -> ise334,
+	offerings -> {
+		\#[
+			semester -> fall(2001),
+			instructors -> {'tony', 'rong'},
+			enrollment -> 182,
+			waiting -> 0, 
+			need_grad_ta -> 2, 
+			need_ug_ta -> 3, 
+			ug_ta -> {
+				'John, Public (jp@aol.com)', 'Blow, Joe (jblow@ic.sunysb.edu)'
+ }
+]
+}
+].
+
+ted:lecturer[name->'Ted Teng']. 
+robkelly:lecturer[name->'Rob Kelly'].
+ari:faculty[name -> 'Ari Kaufman', section587 -> 19]. 
+skiena:faculty[name -> 'Steve Skiena']. 
+kifer:faculty[name -> 'Michael Kifer', section587 -> 9].
+
+Class[\#sprintquery(PrintMethod,SortSpec,QuerySpec)] :-
+L = collectset{Var | (O:Class)@students,
+				Var = Val-O,
+				SortSpec = sortSpec(Path,O,Val),
+				QuerySpec = querySpec(O,QueryCond),
+				Path,
+				QueryCond
+				},
+keysort(L,SortedL)@prolog(),
+Class[\#printlist(PrintMethod,SortedL)],
+length(SortedL,Count)@prolog(basics),
+format('Total ~w count: ~w~w', [Class, Count])@prolog().
